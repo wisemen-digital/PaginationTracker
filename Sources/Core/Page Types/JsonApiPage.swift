@@ -20,7 +20,7 @@ public struct JsonApiPage<T>: PaginationPage {
 
 extension JsonApiPage {
 	enum CodingKeys: String, CodingKey {
-		case items
+		case items = "data"
 		case links
 
 		enum Links: String, CodingKey {
