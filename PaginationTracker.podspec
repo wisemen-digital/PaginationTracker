@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 	# info
 	s.name = 'PaginationTracker'
-	s.version = '1.0.0'
+	s.version = '1.0.1'
 	s.summary = 'Small library for tracking pagination in a table or collection view.'
 	s.description = <<-DESC
 	Pagination tracker will listen for events that the user scrolled to a certain point,
