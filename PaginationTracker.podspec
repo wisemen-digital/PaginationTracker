@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 	# info
 	s.name = 'PaginationTracker'
-	s.version = '1.0.1'
+	s.version = '1.0.2'
 	s.summary = 'Small library for tracking pagination in a table or collection view.'
 	s.description = <<-DESC
 	Pagination tracker will listen for events that the user scrolled to a certain point,
@@ -9,7 +9,8 @@ Pod::Spec.new do |s|
 	DESC
 	s.homepage = 'https://github.com/appwise-labs/PaginationTracker'
 	s.authors = {
-		'David Jennes' => 'david.jennes@gmail.com'
+		'David Jennes' => 'david.jennes@gmail.com',
+		'Tom Knapen' => 'tom@knapen.io'
 	}
 	s.license = {
 		:type => 'MIT',
@@ -31,7 +32,7 @@ Pod::Spec.new do |s|
 	s.subspec 'Core' do |ss|
 		ss.source_files = 'Sources/Core/**/*.swift'
 
-		ss.dependency 'Alamofire'
+		ss.dependency 'Alamofire', '~> 4.8'
 		ss.dependency 'StatefulUI'
 	end
 
