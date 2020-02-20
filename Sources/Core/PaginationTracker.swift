@@ -26,6 +26,9 @@ public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObj
 	private var isLoadingNextPage = false
 	private weak var statefulController: StatefulViewController?
 
+	/// Whether or not tracking is currently enabled.
+	private var isTrackingEnabled: Bool = false
+
 	/// Create a pagination tracker with the given callback for loading data.
 	///
 	/// - Parameter nextPageCall: Callback for loading the next page.
@@ -54,7 +57,11 @@ public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObj
 	public func reset(forceRefresh: Bool, then handler: @escaping (Result<Page>) -> Void) {
 		pages = []
 		limitIndexPath = nil
-		loadNextPage(forceRefresh: forceRefresh, then: handler)
+		isTrackingEnabled = false
+		loadNextPage(forceRefresh: forceRefresh) { [weak self] result in
+			self?.isTrackingEnabled = true
+			handler(result)
+		}
 	}
 
 	/// Track an index path that will be displayed and, if needed, trigger loading the next page.
@@ -70,7 +77,8 @@ public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObj
 		// avoid heavy calculations if we haven't passed the max of before
 		guard let limitIndexPath = limitIndexPath,
 			indexPath > limitIndexPath,
-			!isLoadingNextPage else { return }
+			!isLoadingNextPage,
+			isTrackingEnabled else { return }
 		self.limitIndexPath = indexPath
 
 		// only trigger if we're reached the last page
@@ -96,6 +104,8 @@ public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObj
 
 private extension PaginationTrackerWithContext {
 	func loadNextPage(forceRefresh: Bool, then handler: @escaping (Result<Page>) -> Void) {
+		guard !isLoadingNextPage else { return }
+
 		let context = PaginationContextWithObject(pages: pages, forceRefresh: forceRefresh, object: contextObject)
 
 		isLoadingNextPage = true
