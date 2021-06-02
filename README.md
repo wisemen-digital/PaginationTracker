@@ -76,7 +76,7 @@ extension News {
 
 The next page call is defined as follows:
 ``` swift
-typealias NextPageCall = (_ context: PaginationContextWithObject<Page, ContextObject>, _ handler: @escaping (Result<Page>) -> Void) -> Void
+typealias NextPageCall = (_ context: PaginationContextWithObject<Page, ContextObject>, _ handler: @escaping (Result<Page, Error>) -> Void) -> Void
 ```
 
 If during your pagination, you need to have a certain context object/information, you can use the following initializer instead:
@@ -95,7 +95,7 @@ final class NewsController: UITableViewController {
 Now you can access this object in the next page call:
 
 ```swift
-func loadNextPage(_ context: PaginationContextWithObject<NewsPage, NewsCategory>, _ handler: @escaping (Result<NewsPage>) -> Void) {
+func loadNextPage(_ context: PaginationContextWithObject<NewsPage, NewsCategory>, _ handler: @escaping (Result<NewsPage, Error>) -> Void) {
     // get pagination context object (a news category)
     let newsCategory = context.object
 }

@@ -19,7 +19,7 @@ public protocol PaginatedListRepository {
 
 	var frc: NSFetchedResultsController<PageType.Item> { get }
 	var paginationContextObject: PaginationContextObject { get }
-	func loadNextPage(_ context: PaginationContextWithObject<PageType, PaginationContextObject>, _ handler: @escaping (Result<PageType>) -> Void)
+	func loadNextPage(_ context: PaginationContextWithObject<PageType, PaginationContextObject>, _ handler: @escaping (Result<PageType, Error>) -> Void)
 	func findOldItems() -> [PageType.Item]
 }
 

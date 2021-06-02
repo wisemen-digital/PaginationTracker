@@ -10,7 +10,7 @@ import Alamofire
 import StatefulUI
 
 public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObject> {
-	public typealias NextPageCall = (_ context: PaginationContextWithObject<Page, ContextObject>, _ handler: @escaping (Result<Page>) -> Void) -> Void
+	public typealias NextPageCall = (_ context: PaginationContextWithObject<Page, ContextObject>, _ handler: @escaping (Result<Page, Error>) -> Void) -> Void
 
 	private var pages: [Page] = [] {
 		didSet {
@@ -46,7 +46,7 @@ public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObj
 	/// Equivalent to calling `reset(forceRefresh: false, ...)`
 	///
 	/// - parameter handler: Callback after the page loaded.
-	public func startPaging(then handler: @escaping (Result<Page>) -> Void) {
+	public func startPaging(then handler: @escaping (Result<Page, Error>) -> Void) {
 		reset(forceRefresh: false, then: handler)
 	}
 
@@ -54,7 +54,7 @@ public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObj
 	///
 	/// - parameter forceRefresh: Passed along to the `nextPageCall`.
 	/// - parameter handler: Callback after the page loaded.
-	public func reset(forceRefresh: Bool, then handler: @escaping (Result<Page>) -> Void) {
+	public func reset(forceRefresh: Bool, then handler: @escaping (Result<Page, Error>) -> Void) {
 		pages = []
 		limitIndexPath = nil
 		isTrackingEnabled = false
@@ -69,7 +69,7 @@ public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObj
 	///
 	/// - parameter indexPath: The index path to check.
 	/// - parameter view: The table/collection view to check in.
-	public func track(indexPath: IndexPath, for view: ViewWithItemsInSections, then handler: @escaping (Result<Page>) -> Void = { _ in }) {
+	public func track(indexPath: IndexPath, for view: ViewWithItemsInSections, then handler: @escaping (Result<Page, Error>) -> Void = { _ in }) {
 		if limitIndexPath == nil {
 			resetLimitIndexPath(in: view)
 		}
@@ -97,13 +97,13 @@ public final class PaginationTrackerWithContext<Page: PaginationPage, ContextObj
 	/// Use this if you want to manually trigger loading the next page, for example after a page load failed.
 	///
 	/// - parameter handler: Callback after the page loaded.
-	public func loadNextPage(then handler: @escaping (Result<Page>) -> Void) {
+	public func loadNextPage(then handler: @escaping (Result<Page, Error>) -> Void) {
 		loadNextPage(forceRefresh: false, then: handler)
 	}
 }
 
 private extension PaginationTrackerWithContext {
-	func loadNextPage(forceRefresh: Bool, then handler: @escaping (Result<Page>) -> Void) {
+	func loadNextPage(forceRefresh: Bool, then handler: @escaping (Result<Page, Error>) -> Void) {
 		guard !isLoadingNextPage else { return }
 
 		let context = PaginationContextWithObject(pages: pages, forceRefresh: forceRefresh, object: contextObject)
@@ -112,10 +112,13 @@ private extension PaginationTrackerWithContext {
 		statefulController?.startLoading()
 
 		nextPageCall(context) { [weak self] result in
-			if let page = result.value {
-				self?.pages.append(page)
+			switch result {
+			case .success(let value):
+				self?.pages.append(value)
+				self?.statefulController?.endLoading(error: nil)
+			case .failure(let error):
+				self?.statefulController?.endLoading(error: error)
 			}
-			self?.statefulController?.endLoading(error: result.error)
 			self?.isLoadingNextPage = false
 
 			handler(result)

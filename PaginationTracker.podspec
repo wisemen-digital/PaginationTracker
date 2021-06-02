@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 	# info
 	s.name = 'PaginationTracker'
-	s.version = '1.0.2'
+	s.version = '2.0.0'
 	s.summary = 'Small library for tracking pagination in a table or collection view.'
 	s.description = <<-DESC
 	Pagination tracker will listen for events that the user scrolled to a certain point,
@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
 	s.subspec 'Core' do |ss|
 		ss.source_files = 'Sources/Core/**/*.swift'
 
-		ss.dependency 'Alamofire', '~> 4.8'
+		ss.dependency 'Alamofire', '~> 5.4'
 		ss.dependency 'StatefulUI'
 	end
 
