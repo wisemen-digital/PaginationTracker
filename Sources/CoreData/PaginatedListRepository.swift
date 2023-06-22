@@ -39,3 +39,13 @@ public extension PaginatedListRepository where PaginationContextObject == Void {
 		return ()
 	}
 }
+
+public extension PaginatedListRepository {
+	var hasResults: Bool {
+		numberOfResults > 0
+	}
+
+	var numberOfResults: Int {
+		(try? context.count(for: fetchRequest)) ?? 0
+	}
+}
