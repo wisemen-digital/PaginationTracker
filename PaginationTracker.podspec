@@ -31,8 +31,6 @@ Pod::Spec.new do |s|
 	# Core spec
 	s.subspec 'Core' do |ss|
 		ss.source_files = 'Sources/Core/**/*.swift'
-
-		ss.dependency 'Alamofire', '~> 5.4'
 		ss.dependency 'StatefulUI'
 	end
 

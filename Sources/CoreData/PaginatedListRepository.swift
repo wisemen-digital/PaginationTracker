@@ -3,7 +3,6 @@
 // Copyright © 2023 Wisemen
 //
 
-import Alamofire
 import AppwiseCore
 import CoreData
 
