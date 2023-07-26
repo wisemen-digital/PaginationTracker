@@ -108,19 +108,26 @@ extension AsyncPaginationTrackerManager {
 extension AsyncPaginationTrackerManager {
 	func loadNextPage(forceRefresh: Bool) async throws -> Page {
 		let task: Task<Page, Error> = loadNextPage(forceRefresh: forceRefresh)
-		activeTask = task
 
+		activeTask = task
 		defer { activeTask = nil }
 
-		do {
-			delegate?.startLoading()
-			let page = try await task.value
-			delegate?.endLoading(error: nil)
-			return page
-		} catch {
-			delegate?.endLoading(error: error)
-			throw error
-		}
+		return try await withTaskCancellationHandler(
+			operation: {
+				do {
+					delegate?.startLoading()
+					let page = try await task.value
+					delegate?.endLoading(error: nil)
+					return page
+				} catch {
+					delegate?.endLoading(error: error)
+					throw error
+				}
+			},
+			onCancel: {
+				task.cancel()
+			}
+		)
 	}
 
 	func loadNextPage(forceRefresh: Bool) -> Task<Page, Error> {
