@@ -11,7 +11,7 @@ public final class AsyncPaginationTrackerWithContext<Page: PaginationPage, Conte
 	public typealias NextPageCall = (_ context: PaginationContext) async throws -> Page
 
 	private let manager: AsyncPaginationTrackerManager<Page, ContextObject>
-	private weak var statefulController: StatefulViewController?
+	public weak var statefulController: StatefulViewController?
 
 	/// Create a pagination tracker with the given callback for loading data.
 	///
