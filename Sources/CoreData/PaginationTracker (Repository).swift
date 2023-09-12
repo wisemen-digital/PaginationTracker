@@ -1,9 +1,6 @@
 //
-//  PaginationTracker (Repository).swift
-//  Tennis Vlaanderen
-//
-//  Created by David Jennes on 01/04/2019.
-//  Copyright © 2019 Appwise. All rights reserved.
+// PaginationTracker
+// Copyright © 2023 Wisemen
 //
 
 import Foundation
